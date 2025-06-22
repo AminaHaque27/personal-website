@@ -8,10 +8,9 @@ const IntroDesktop = () => {
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === "Enter") {
-        navigate("/main"); // <-- replace with your actual route
+        navigate("/main"); // Navigates when Enter is pressed
       }
     };
-
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
@@ -42,6 +41,11 @@ const IntroDesktop = () => {
         </p>
         <p>Welcome to Amina Haque’s Digital World</p>
         <p className="enter-text">Press ENTER to log in</p>
+
+        {/* ✅ New Button for Mobile */}
+        <button className="enter-button" onClick={() => navigate("/main")}>
+          Enter
+        </button>
       </div>
     </div>
   );
