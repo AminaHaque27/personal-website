@@ -15,7 +15,7 @@ const MainPage = () => {
   const audioRef = useRef(null);
 
   useEffect(() => {
-    const audio = new Audio("/Lofi.mp3");
+    const audio = new Audio(`${process.env.PUBLIC_URL}/Lofi.mp3`);
     audio.loop = true;
     audio.volume = 0.3;
     audioRef.current = audio;
@@ -47,13 +47,13 @@ const MainPage = () => {
   };
 
   const playClickSound = () => {
-    const audio = new Audio("/Click.mp3");
+    const audio = new Audio(`${process.env.PUBLIC_URL}/Click.mp3`);
     audio.volume = 1;
     audio.play();
   };
 
   const playPageFlipSound = () => {
-    const audio = new Audio("/PageFlip.mp3");
+    const audio = new Audio(`${process.env.PUBLIC_URL}/PageFlip.mp3`);
     audio.volume = 1;
     audio.play();
   };
@@ -167,7 +167,7 @@ const MainPage = () => {
             onClick={() => handleIconClick("Resume")}
           >
             <img
-              src="/ResumeReal.png"
+              src={`${process.env.PUBLIC_URL}/ResumeReal.png`}
               alt="Resume"
               className="desktop-icon-image"
             />
@@ -179,7 +179,7 @@ const MainPage = () => {
             onClick={() => handleIconClick("Education")}
           >
             <img
-              src="/FolderReal.png"
+              src={`${process.env.PUBLIC_URL}/FolderReal.png`}
               alt="Folder"
               className="desktop-icon-image"
             />
@@ -195,7 +195,7 @@ const MainPage = () => {
             onClick={() => handleIconClick("Contact")}
           >
             <img
-              src="/ContactReal.png"
+              src={`${process.env.PUBLIC_URL}/ContactReal.png`}
               alt="Contact"
               className="desktop-icon-image"
             />
@@ -207,7 +207,7 @@ const MainPage = () => {
             onClick={() => handleIconClick("About Me")}
           >
             <img
-              src="/ComputerReal.png"
+              src={`${process.env.PUBLIC_URL}/ComputerReal.png`}
               alt="Computer"
               className="desktop-icon-image"
             />
@@ -223,7 +223,7 @@ const MainPage = () => {
             onClick={() => handleIconClick("Skills")}
           >
             <img
-              src="/DiscReal.png"
+              src={`${process.env.PUBLIC_URL}/DiscReal.png`}
               alt="Disc"
               className="desktop-icon-image"
             />
@@ -239,11 +239,11 @@ const MainPage = () => {
             }}
           >
             <img
-              src="/Gameboy.png"
+              src={`${process.env.PUBLIC_URL}/Gameboy.png`}
               alt="Gameboy"
               className="desktop-icon-image gameboy-icon"
             />
-            <div className="desktop-icon-label">Gameboy</div>
+            <div className="desktop-icon-label">Arcade</div>
           </div>
         </div>
       </div>
@@ -294,7 +294,7 @@ const MainPage = () => {
             <div className="app-window-content">
               {windowName === "Resume" ? (
                 <iframe
-                  src="/Amina Haque Resume (10).pdf"
+                  src={`${process.env.PUBLIC_URL}/Amina Haque Resume (10).pdf`}
                   width="100%"
                   height="100%"
                   style={{ border: "none" }}
@@ -322,7 +322,11 @@ const MainPage = () => {
                     tech chats, and meaningful collaborations 🚀
                   </div>
 
-                  <img src="/Mail.png" alt="Mail Icon" className="mail-icon" />
+                  <img
+                    src={`${process.env.PUBLIC_URL}/Mail.png`}
+                    alt="Mail Icon"
+                    className="mail-icon"
+                  />
                 </div>
               ) : windowName === "About Me" ? (
                 <div className="about-me-content">
@@ -330,7 +334,7 @@ const MainPage = () => {
 
                   <div className="about-me-header">
                     <img
-                      src="/Profile.png"
+                      src={`${process.env.PUBLIC_URL}/Profile.png`}
                       alt="Amina Haque"
                       className="about-me-image"
                     />
@@ -386,7 +390,7 @@ const MainPage = () => {
                 <div className="education-content">
                   <div className="education-header">
                     <img
-                      src="/GradPic.png"
+                      src={`${process.env.PUBLIC_URL}/GradPic.png`}
                       alt="Graduation"
                       className="education-image"
                     />
@@ -540,7 +544,7 @@ const MainPage = () => {
                   </div>
                   <div className="skills-image-wrapper">
                     <img
-                      src="/Pencil.png"
+                      src={`${process.env.PUBLIC_URL}/Pencil.png`}
                       alt="Skills Decoration"
                       className="skills-image"
                     />
