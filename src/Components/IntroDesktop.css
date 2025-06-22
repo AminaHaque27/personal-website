@@ -6,17 +6,16 @@
 }
 
 .intro-text {
-  background-color: rgba(0, 0, 0, 0.7); /* semi-transparent black box */
-  padding: 20px 40px;
-  border: 2px solid #00aaff; /* blue border */
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 10px 20px; /* Reduced padding */
+  border: 2px solid #00aaff;
   display: inline-block;
   animation: fadeIn 2s ease-in;
-
-  /* Move it up a bit */
-  transform: translateY(-170px);
-
-  /* Text glow */
+  transform: translateY(-100px); /* Optional: adjust positioning if needed */
   text-shadow: 0 0 10px #00aaff, 0 0 20px #00aaff, 0 0 30px #00aaff;
+
+  /* Optional max width for tighter layout */
+  max-width: 170px;
 }
 
 .intro-text p {
