@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import IntroDesktop from "./Components/IntroDesktop";
 import MainPage from "./Components/MainPage"; // ← your main/desktop page
 
