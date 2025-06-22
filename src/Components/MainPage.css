@@ -986,3 +986,28 @@ a .contact-callout:hover {
 }
 
 /* Sound effects can be triggered in JS on correct word typed */
+
+@media (max-width: 1366px) {
+  .gameboy-icon {
+    width: min(140px, 15vw);
+  }
+}
+
+@media (max-width: 768px) {
+  .gameboy-icon {
+    width: min(100px, 20vw);
+  }
+}
+
+@media (max-width: 480px) {
+  .gameboy-icon {
+    width: min(80px, 25vw);
+  }
+}
+
+@media (max-height: 700px) {
+  .gameboy-icon {
+    width: 100px;
+    height: auto;
+  }
+}

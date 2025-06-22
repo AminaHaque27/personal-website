@@ -432,7 +432,10 @@ const MainPage = () => {
                         className="course-box"
                         onMouseEnter={() => {
                           // Stop all other sounds before playing
-                          const audio = new Audio(`/${course.sound}.mp3`);
+                          const audio = new Audio(
+                            `${process.env.PUBLIC_URL}/${course.sound}.mp3`
+                          );
+
                           audio.volume = 0.6;
                           audio.play();
                         }}
@@ -470,7 +473,10 @@ const MainPage = () => {
                           key={index}
                           className="skill-badge"
                           onMouseEnter={() => {
-                            const audio = new Audio(`/${sound}.mp3`);
+                            const audio = new Audio(
+                              `${process.env.PUBLIC_URL}/${sound}.mp3`
+                            );
+
                             audio.volume = 0.6;
                             audio.play();
                           }}
@@ -502,7 +508,10 @@ const MainPage = () => {
                           key={index}
                           className="skill-badge"
                           onMouseEnter={() => {
-                            const audio = new Audio(`/${sound}.mp3`);
+                            const audio = new Audio(
+                              `${process.env.PUBLIC_URL}/${sound}.mp3`
+                            );
+
                             audio.volume = 0.6;
                             audio.play();
                           }}
@@ -532,7 +541,9 @@ const MainPage = () => {
                           key={index}
                           className="skill-badge"
                           onMouseEnter={() => {
-                            const audio = new Audio(`/${sound}.mp3`);
+                            const audio = new Audio(
+                              `${process.env.PUBLIC_URL}/${sound}.mp3`
+                            );
                             audio.volume = 0.6;
                             audio.play();
                           }}
