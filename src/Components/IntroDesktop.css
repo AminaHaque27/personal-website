@@ -1,0 +1,80 @@
+.intro-desktop {
+  background-color: #000; /* fallback color */
+  color: #00aaff; /* blue text */
+  font-family: "Courier New", Courier, monospace; /* computer-style font */
+  text-align: center;
+}
+
+.intro-text {
+  background-color: rgba(0, 0, 0, 0.7); /* semi-transparent black box */
+  padding: 20px 40px;
+  border: 2px solid #00aaff; /* blue border */
+  display: inline-block;
+  animation: fadeIn 2s ease-in;
+
+  /* Move it up a bit */
+  transform: translateY(-170px);
+
+  /* Text glow */
+  text-shadow: 0 0 10px #00aaff, 0 0 20px #00aaff, 0 0 30px #00aaff;
+}
+
+.intro-text p {
+  margin: 10px 0;
+  font-size: 24px;
+}
+
+.enter-text {
+  animation: blink 1s infinite;
+  font-weight: bold;
+}
+
+/* Typing animation */
+.typing {
+  display: inline-block;
+  overflow: hidden;
+  border-right: 0.15em solid #00aaff;
+  white-space: nowrap;
+  animation: typing 3s steps(20, end), blink-caret 0.75s step-end infinite;
+}
+
+/* Typing keyframes */
+@keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes blink-caret {
+  0%,
+  100% {
+    border-color: transparent;
+  }
+  50% {
+    border-color: #00aaff;
+  }
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Blinking animation for "Press ENTER" */
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
