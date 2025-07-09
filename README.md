@@ -1,70 +1,55 @@
-# Getting Started with Create React App
+# 🌐 Amina Haque — Personal Website
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Welcome to the GitHub repository for my [personal website](https://aminahaque27.github.io/personal-website/)! I'm Amina Haque, a recent Computer Science graduate and incoming Master's student at the University of Texas at Dallas. This site serves as a central hub for my professional background, projects, and technical portfolio.
 
-## Available Scripts
+## 🔍 About Me
 
-In the project directory, you can run:
+I'm passionate about building meaningful software solutions that combine technical rigor with thoughtful user experience. With hands-on experience in full-stack development, machine learning, UI/UX, and agile collaboration, I'm excited to grow in the software engineering field.
 
-### `npm start`
+I’ve worked on everything from trading automation to educational platforms and weather-based climate forecasting tools. I’m particularly interested in the intersection of software engineering, AI, and design.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 🛠️ Technologies Used
 
-### `npm test`
+This site is built using:
+- **HTML/CSS**
+- **JavaScript**
+- **GitHub Pages** for deployment
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Planned updates include:
+- React or Next.js implementation
+- Interactive project components
+- Embedded blogs or changelogs
 
-### `npm run build`
+---
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 💡 Featured Projects
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 🌱 [Aurora](https://github.com/aminahaque27/aurora)
+Machine learning-powered climate forecasting app using historical Texas weather data. Built with Python, React, and REST APIs.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 🧵 [EcoCraft](https://github.com/aminahaque27/ecocraft)
+Educational crafting app that promotes sustainability by suggesting crafts based on recycled materials.
 
-### `npm run eject`
+### 🏠 RoomieConnect
+A full-stack web application for roommate matching, complete with user preferences, profiles, and messaging features.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### 🎶 GDYO Mobile App
+Developed a cross-platform app for Greater Dallas Youth Orchestra to manage student communication, schedules, and newsletters.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+---
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## 📫 Contact
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Feel free to connect with me on [LinkedIn](https://linkedin.com/in/amina-syeda-haque) or shoot me an email at **aminashaque@gmail.com**. I'd love to collaborate, network, or just chat about tech!
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 🚀 Live Website
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+👉 [Visit aminahaque27.github.io/personal-website](https://aminahaque27.github.io/personal-website/)
 
-### Code Splitting
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Thank you for checking out my work!
