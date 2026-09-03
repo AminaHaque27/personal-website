@@ -1,3 +1,10 @@
+/* Root font size scales gently with the viewport:
+   about 14px on phones, 16px on laptops, 18px on large monitors.
+   Everything sized in rem follows along. */
+html {
+  font-size: clamp(14px, 0.45vw + 10px, 18px);
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',

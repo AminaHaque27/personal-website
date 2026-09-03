@@ -1,16 +1,47 @@
-/* Ensure global box-sizing */
+/* =========================================================
+   MainPage.css
+   Layout for the "desktop" screen: icons, windows, taskbar.
+
+   Sizing approach:
+   - The root font-size scales gently with the viewport (see index.css),
+     so everything sized in rem grows a little on big monitors and
+     shrinks a little on phones while staying readable.
+   - Icons scale with the viewport via --icon-size.
+   - Windows are a percentage of the viewport but capped, so they look
+     like a normal dialog on a large monitor and fill a phone screen.
+   ========================================================= */
+
+:root {
+  --purple: #570987;
+  --purple-dark: #301860;
+  --magenta: #7e1d6f;
+  --ink: #222;
+  --ink-soft: #555;
+
+  --taskbar-height: clamp(48px, 7vh, 64px);
+
+  /* Icon artwork size: grows with both width and height of the screen. */
+  --icon-size: clamp(72px, 7vw + 3vh, 180px);
+
+  /* Popup window size: most of a phone screen, a dialog on a monitor. */
+  --window-width: min(92vw, 960px);
+  --window-height: min(85vh, 720px);
+}
+
 * {
   box-sizing: border-box;
 }
 
-/* Main Page */
+/* ---------- Page background ---------- */
+
 .main-page {
   position: relative;
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
+  min-height: 100dvh;
   overflow: hidden;
-  overflow-y: auto;
   cursor: default;
+  font-family: "Courier New", Courier, monospace;
   background-image: repeating-linear-gradient(
       to right,
       rgba(255, 255, 255, 0.1) 0px,
@@ -33,41 +64,39 @@
       #ff357f 100%
     );
   background-size: cover;
-  font-family: "Courier New", Courier, monospace;
 }
 
-/* Desktop Content */
+/* ---------- Desktop icons ---------- */
+
 .desktop-content {
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-start; /* ✅ keep */
   align-items: flex-start;
-  padding: clamp(20px, 5vw, 100px);
-  gap: clamp(20px, 5vw, 250px);
-  height: calc(100% - 80px);
-  width: 100%;
-  margin: 0; /* ✅ remove auto-centering */
-  max-width: none; /* ✅ remove width limit */
+  gap: clamp(12px, 5vw, 120px);
+  padding: clamp(16px, 4vw, 64px);
+  padding-bottom: calc(var(--taskbar-height) + 16px);
+  min-height: 100vh;
+  min-height: 100dvh;
 }
 
-/* Desktop Column */
 .desktop-column {
   display: flex;
   flex-direction: column;
-  gap: clamp(20px, 5vw, 200px);
+  gap: clamp(12px, 6vh, 96px);
 }
 
-/* Desktop Icon */
 .desktop-icon {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: min(200px, 15vw);
-  padding: clamp(10px, 2vw, 30px);
+  width: calc(var(--icon-size) + 2 * clamp(8px, 1.2vw, 20px));
+  padding: clamp(8px, 1.2vw, 20px);
   border-radius: 12px;
   cursor: pointer;
   user-select: none;
+  -webkit-tap-highlight-color: transparent;
   animation: bounceScaleSlow 2.5s infinite;
+  animation-delay: var(--bounce-delay, 0s);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -79,6 +108,25 @@
 .desktop-icon:active {
   transform: scale(0.95);
   box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+}
+
+.desktop-icon-image {
+  width: var(--icon-size);
+  height: var(--icon-size);
+  object-fit: contain;
+}
+
+/* The Gameboy artwork is taller than it is wide, so give it a touch less width. */
+.desktop-icon-image.gameboy-icon {
+  width: calc(var(--icon-size) * 0.85);
+}
+
+.desktop-icon-label {
+  margin-top: 0.5rem;
+  font-size: clamp(0.8rem, 0.6vw + 0.6rem, 1.4rem);
+  text-align: center;
+  color: white;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
 }
 
 @keyframes bounceScale {
@@ -101,98 +149,38 @@
   }
 }
 
-.desktop-icon-image {
-  width: min(250px, 20vw);
-  height: auto;
-  object-fit: contain;
-}
-
-.desktop-icon-label {
-  margin-top: 10px;
-  font-size: clamp(20px, 3vw, 50px);
-  color: white;
-  text-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
-}
-
-/* Taskbar */
-.taskbar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: clamp(50px, 8vh, 80px);
-  background-color: rgba(10, 42, 74, 0.85);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 clamp(10px, 2vw, 25px);
-  font-size: clamp(14px, 2vw, 18px);
-  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.5);
-  z-index: 100;
-}
-
-/* Power Button */
-.power-button {
-  background: none;
-  border: none;
-  color: white;
-  font-size: clamp(20px, 3vw, 32px);
-  cursor: pointer;
-  padding: 5px;
-}
-
-/* Power Menu */
-.power-menu {
-  position: absolute;
-  bottom: clamp(60px, 10vh, 90px);
-  left: 10px;
-  background-color: rgba(40, 40, 40, 0.95);
-  border: 1px solid #444;
-  border-radius: 8px;
-  padding: 10px;
-  color: white;
-  font-size: clamp(16px, 2.5vw, 20px);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  z-index: 200;
-}
-
-.power-menu div {
-  padding: clamp(10px, 2vw, 16px) clamp(12px, 2vw, 20px);
-  cursor: pointer;
-  font-size: clamp(16px, 2.5vw, 22px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.power-menu div:last-child {
-  border-bottom: none;
-}
-
-.power-menu div:hover {
-  background-color: rgba(80, 80, 80, 0.8);
-}
+/* ---------- Popup windows ---------- */
 
 .app-window {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%); /* Base centering transform */
-  width: 50vw;
-  height: 70vh;
-  background-color: rgba(255, 255, 255, 0.95);
-  border: 10px solid #570987;
-  border-radius: 16px;
-  box-shadow: 0 0 20px rgba(52, 9, 150, 0.5);
-  z-index: 50;
-  overflow: hidden;
+  width: var(--window-width);
+  height: var(--window-height);
+  max-height: calc(100vh - var(--taskbar-height) - 16px);
+  max-height: calc(100dvh - var(--taskbar-height) - 16px);
   display: flex;
   flex-direction: column;
-  opacity: 0; /* Start invisible */
-  scale: 0.9; /* Start slightly scaled down */
-  animation: fadeInWindow 0.3s ease forwards; /* Use forwards to retain final state */
+  overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.97);
+  border: 4px solid var(--purple);
+  border-radius: 14px;
+  box-shadow: 0 10px 40px rgba(20, 5, 60, 0.55);
+  opacity: 0;
+  scale: 0.9;
+  animation: fadeInWindow 0.25s ease forwards;
 }
 
-/* Fade-in Animation */
+/* Until the user drags a window it is centered with a transform; once dragged,
+   MainPage.js switches to explicit left/top values. */
+.app-window.centered {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.app-window.hide {
+  animation: fadeOutWindow 0.25s ease forwards;
+}
+
 @keyframes fadeInWindow {
   to {
     opacity: 1;
@@ -200,116 +188,130 @@
   }
 }
 
-/* App Window Titlebar */
+@keyframes fadeOutWindow {
+  from {
+    opacity: 1;
+    scale: 1;
+  }
+  to {
+    opacity: 0;
+    scale: 0.9;
+  }
+}
+
 .app-window-titlebar {
-  background-color: #570987;
-  color: white;
-  padding: 10px;
-  font-size: clamp(20px, 4vw, 50px);
-  font-weight: bold;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background-color: var(--purple);
+  color: white;
+  font-size: 1.15rem;
+  font-weight: bold;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
 }
 
-/* App Window Content */
-.app-window-content {
-  flex: 1;
+.app-window-titlebar:active {
+  cursor: grabbing;
+}
+
+.app-window-controls {
   display: flex;
-  flex-direction: column;
-  padding: 0;
-  overflow: auto; /* Allow scrolling if content overflows */
+  gap: 0.25rem;
+  flex-shrink: 0;
 }
 
-/* Close Button */
+.minimize-button,
 .close-button {
   background: none;
   border: none;
   color: white;
-  font-size: clamp(20px, 4vw, 50px);
+  font-size: 1.15rem;
+  line-height: 1;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
   cursor: pointer;
 }
 
-/* Minimize Button */
-.minimize-button {
-  background: none;
-  border: none;
-  color: white;
-  font-size: clamp(16px, 3vw, 40px);
-  margin-right: 10px;
-  cursor: pointer;
+.minimize-button:hover,
+.close-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
-/* Taskbar Center */
-.taskbar-center {
+.app-window-content {
+  flex: 1;
   display: flex;
-  gap: 10px;
+  flex-direction: column;
+  min-height: 0;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  font-family: "Poppins", "Segoe UI", sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--ink);
 }
 
-.taskbar-tab {
-  background-color: rgba(255, 255, 255, 0.2);
-  color: white;
-  padding: 5px 10px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: clamp(12px, 2vw, 16px);
+.app-window-content > * {
+  flex-shrink: 0;
 }
 
-/* Smooth Hide Animation */
-.app-window.hide {
-  animation: fadeOutWindow 0.3s ease forwards;
+/* ---------- Resume window ---------- */
+
+.resume-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
-@keyframes fadeOutWindow {
-  from {
-    opacity: 1;
-    transform: scale(1);
-  }
-  to {
-    opacity: 0;
-    transform: scale(0.9);
-  }
+.resume-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid #ddd;
+  background-color: #f6f2fa;
 }
 
-/* Taskbar Mute Button */
-.taskbar-mute-button {
-  background-color: rgba(255, 255, 255, 0.2);
+.resume-toolbar a {
+  color: var(--purple);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.resume-toolbar a:hover {
+  text-decoration: underline;
+}
+
+.resume-frame {
+  flex: 1;
+  width: 100%;
   border: none;
-  color: white;
-  font-size: clamp(16px, 2.5vw, 24px);
-  padding: 6px 10px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  margin-right: clamp(20px, 5vw, 100px);
+  min-height: 0;
 }
 
-.taskbar-mute-button:hover {
-  background-color: rgba(255, 255, 255, 0.4);
-}
+/* ---------- Contact window ---------- */
 
-/* Contact Content */
 .contact-content {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  padding: clamp(15px, 3vw, 30px);
-  font-size: clamp(20px, 3vw, 40px);
-  color: #222;
+  gap: 0.9rem;
+  padding: clamp(1rem, 3vw, 1.75rem);
 }
 
 .contact-box {
-  background-color: rgba(87, 9, 135, 0.1);
-  border: 2px solid #570987;
+  padding: 0.7rem 1rem;
+  background-color: rgba(87, 9, 135, 0.08);
+  border: 2px solid var(--purple);
   border-radius: 12px;
-  padding: clamp(10px, 2vw, 15px) clamp(12px, 2vw, 20px);
-  color: #333;
-  font-weight: bold;
-  word-break: break-word;
+  font-weight: 600;
+  overflow-wrap: anywhere;
 }
 
 .contact-box a {
-  color: #570987;
+  color: var(--purple);
   text-decoration: none;
 }
 
@@ -317,83 +319,16 @@
   text-decoration: underline;
 }
 
-/* About Me Content */
-.about-me-content {
-  font-family: "Poppins", sans-serif;
-  display: flex;
-  flex-direction: column;
-  padding: clamp(15px, 3vw, 30px);
-  color: #222;
-}
-
-.about-me-header {
-  display: flex;
-  align-items: center;
-  gap: clamp(10px, 2vw, 40px);
-  flex-wrap: wrap; /* Allow wrapping on smaller screens */
-  margin-bottom: 30px;
-}
-
-.about-me-image {
-  width: min(300px, 25vw);
-  height: auto;
-  object-fit: cover;
-  border-radius: 12px;
-  border: 3px solid #570987;
-  flex-shrink: 0;
-  margin-top: 0; /* Remove negative margin */
-}
-
-.about-me-name {
-  font-size: clamp(30px, 5vw, 100px);
-  font-weight: normal;
-  color: #570987;
-  margin-bottom: clamp(10px, 2vw, 50px);
-  text-align: left;
-  margin-left: 0; /* Remove large margin */
-}
-
-.about-me-intro ul {
-  padding-left: 20px;
-  font-size: clamp(16px, 2.5vw, 30px);
-  line-height: 1.8;
-  list-style: none;
-}
-
-.about-me-intro li {
-  margin-bottom: 10px;
-  font-weight: normal !important;
-}
-
-.about-me-divider {
-  border: none;
-  height: 3px;
-  background-color: #ccc;
-  margin: 30px 0;
-  border-radius: 2px;
-}
-.about-me-intro strong {
-  font-weight: bold; /* Ensure only <strong> is bold */
-}
-
-/* Contact Callout */
 .contact-callout {
-  background-color: rgba(87, 9, 135, 0.08);
-  border-left: 6px solid #570987;
+  margin-top: 0.5rem;
+  padding: 0.85rem 1.1rem;
+  background-color: rgba(87, 9, 135, 0.06);
+  border-left: 6px solid var(--purple);
   border-radius: 12px;
-  padding: clamp(10px, 2vw, 20px) clamp(12px, 2vw, 25px);
-  font-size: clamp(16px, 2.5vw, 30px);
   font-style: italic;
   color: #333;
-  margin-top: 20px;
   box-shadow: 0 0 8px rgba(87, 9, 135, 0.2);
   animation: fadeInCallout 1s ease;
-  transition: box-shadow 0.3s ease, transform 0.3s ease;
-}
-
-a .contact-callout:hover {
-  box-shadow: 0 0 15px rgba(87, 9, 135, 0.4);
-  transform: scale(1.02);
 }
 
 @keyframes fadeInCallout {
@@ -407,7 +342,6 @@ a .contact-callout:hover {
   }
 }
 
-/* Emoji Wave */
 .emoji-wave {
   display: inline-block;
   animation: waveHand 2s infinite;
@@ -433,18 +367,15 @@ a .contact-callout:hover {
   50% {
     transform: rotate(10deg);
   }
-  60% {
-    transform: rotate(0deg);
-  }
+  60%,
   100% {
     transform: rotate(0deg);
   }
 }
 
-/* Mail Icon */
 .mail-icon {
-  width: min(600px, 50vw);
-  margin-top: clamp(20px, 5vh, 100px);
+  width: min(220px, 45%);
+  margin-top: 1rem;
   align-self: center;
   animation: floatMail 2s ease-in-out infinite;
 }
@@ -459,131 +390,148 @@ a .contact-callout:hover {
   }
 }
 
-/* About Me Fun */
+/* ---------- About Me window ---------- */
+
+.about-me-content {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(1rem, 3vw, 1.75rem);
+}
+
+.about-me-name {
+  margin-bottom: 1rem;
+  font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+  color: var(--purple);
+}
+
+.about-me-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.about-me-image {
+  width: clamp(110px, 22%, 200px);
+  height: auto;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 3px solid var(--purple);
+  flex-shrink: 0;
+}
+
+.about-me-intro {
+  flex: 1;
+  min-width: 0;
+}
+
+.about-me-intro ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.about-me-intro li {
+  margin-bottom: 0.6rem;
+}
+
+.about-me-intro strong {
+  font-weight: 600;
+}
+
+.about-me-divider,
+.education-divider {
+  border: none;
+  height: 3px;
+  margin: 1.25rem 0;
+  background-color: #ddd;
+  border-radius: 2px;
+}
+
 .about-me-fun {
-  margin-top: 30px;
-  padding: 20px;
+  padding: 1rem 1.1rem;
   background-color: rgba(87, 9, 135, 0.05);
-  border-left: 6px solid #570987;
+  border-left: 6px solid var(--purple);
   border-radius: 8px;
-  font-size: clamp(16px, 2.5vw, 30px);
-  line-height: 1.7;
   color: #333;
 }
 
 .fun-title {
-  font-size: clamp(20px, 3vw, 40px);
-  margin-bottom: 12px;
-  color: #570987;
+  margin: 0 0 0.5rem;
+  font-size: 1.3rem;
+  color: var(--purple);
+}
+
+.fun-text {
+  margin: 0;
 }
 
 .fun-text strong {
-  color: #7e1d6f;
+  color: var(--magenta);
 }
 
-/* Education Content */
+/* ---------- Education window ---------- */
+
 .education-content {
-  padding: clamp(15px, 3vw, 30px);
-  font-family: "Poppins", sans-serif;
-  color: #222;
-}
-
-.education-title {
-  font-size: clamp(30px, 4vw, 70px);
-  margin-bottom: 25px;
-  color: #570987;
-  margin-left: 0; /* Remove fixed margin */
+  padding: clamp(1rem, 3vw, 1.75rem);
 }
 
 .education-header {
   display: flex;
   align-items: flex-start;
-  gap: clamp(5px, 2vw, 10px);
-  flex-wrap: wrap;
+  gap: 1.25rem;
 }
 
 .education-image {
-  width: min(500px, 40vw);
+  width: clamp(140px, 32%, 300px);
   height: auto;
   object-fit: cover;
   border-radius: 12px;
-  border: 3px solid #570987;
+  border: 3px solid var(--purple);
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
   flex-shrink: 0;
-  margin-top: 0; /* Remove negative margin */
 }
 
-.education-info {
+.education-text {
   flex: 1;
+  min-width: 0;
+}
+
+.education-title {
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.4rem, 2.2vw, 1.9rem);
+  color: var(--purple);
 }
 
 .education-degree {
-  font-size: clamp(16px, 2.5vw, 30px);
-  margin-bottom: 10px;
-  margin-left: clamp(10px, 2vw, 50px);
-  margin-top: 5px;
+  margin: 0 0 0.35rem;
+  font-size: 1.05rem;
 }
 
 .education-school,
 .education-date {
-  font-size: clamp(14px, 2vw, 25px);
-  margin-bottom: 5px;
-  color: #555;
-  margin-left: clamp(10px, 2vw, 50px);
+  margin: 0 0 0.25rem;
+  color: var(--ink-soft);
 }
 
-.education-divider {
-  border: none;
-  height: 3px;
-  background-color: #ccc;
-  margin: clamp(20px, 5vh, 40px) 0 25px;
-  border-radius: 2px;
-}
-
-.course-section-title {
-  font-size: clamp(20px, 3vw, 50px);
-  margin: 10px 0 15px;
-  color: #333;
-}
-
-.course-badges {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 30px;
-}
-
-.course-badge {
-  padding: clamp(6px, 1.5vw, 10px) clamp(8px, 1.5vw, 16px);
-  background-color: #f5f5f5;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  font-size: clamp(16px, 2.5vw, 30px); /* Reduced from 50px */
-  color: #333;
-  box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  cursor: default;
-}
-
-.course-badge:hover {
-  transform: scale(1.05);
-  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
+.coursework-heading {
+  margin: 0 0 0.75rem;
+  font-size: 1.3rem;
+  color: var(--purple);
 }
 
 .education-courses {
   display: flex;
   flex-wrap: wrap;
-  gap: 15px;
-  margin-top: 20px;
+  gap: 0.6rem;
 }
 
 .course-box {
-  padding: clamp(6px, 1.5vw, 10px) clamp(8px, 1.5vw, 18px);
+  padding: 0.4rem 0.8rem;
   border: 2px solid #ccc;
   border-radius: 10px;
   background-color: #f6f6f6;
-  font-size: clamp(16px, 2.5vw, 30px);
-  font-family: "Poppins", sans-serif;
+  font-size: 0.95rem;
   color: #5f5d5d;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -595,203 +543,36 @@ a .contact-callout:hover {
   background-color: #fafafa;
 }
 
-.coursework-heading {
-  font-size: clamp(20px, 3vw, 40px);
-}
-
-/* Media Queries */
-@media (max-width: 1366px) {
-  .desktop-icon {
-    width: min(140px, 20vw);
-    padding: 16px;
-  }
-
-  .desktop-icon-image {
-    width: min(140px, 15vw);
-  }
-
-  .desktop-icon-label {
-    font-size: clamp(16px, 2.5vw, 24px);
-  }
-
-  .about-me-header {
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-  }
-
-  .about-me-name {
-    font-size: clamp(24px, 4vw, 50px);
-    text-align: center;
-    margin-left: 0;
-  }
-
-  .about-me-image {
-    width: min(200px, 30vw);
-  }
-
-  .education-image {
-    width: min(300px, 50vw);
-  }
-
-  .app-window {
-    width: min(95vw, 1200px);
-    height: min(85vh, 600px);
-  }
-}
-
-@media (max-width: 768px) {
-  .desktop-content {
-    padding: 15px;
-  }
-
-  .desktop-icon {
-    width: min(120px, 25vw);
-    padding: 12px;
-  }
-
-  .desktop-icon-image {
-    width: min(100px, 20vw);
-  }
-
-  .desktop-icon-label {
-    font-size: clamp(14px, 3vw, 18px);
-  }
-
-  .taskbar {
-    height: 60px;
-    font-size: 14px;
-  }
-
-  .app-window-titlebar {
-    font-size: clamp(16px, 3vw, 24px);
-  }
-
-  .about-me-image {
-    width: min(150px, 40vw);
-  }
-
-  .education-image {
-    width: min(250px, 60vw);
-  }
-
-  .mail-icon {
-    width: min(300px, 60vw);
-  }
-
-  .contact-content {
-    font-size: clamp(16px, 3vw, 24px);
-  }
-
-  .education-title {
-    font-size: clamp(24px, 4vw, 40px);
-  }
-}
-
-@media (max-width: 480px) {
-  .desktop-content {
-    padding: 10px;
-  }
-
-  .desktop-icon {
-    width: min(100px, 30vw);
-    padding: 10px;
-  }
-
-  .desktop-icon-image {
-    width: min(80px, 25vw);
-  }
-
-  .desktop-icon-label {
-    font-size: clamp(12px, 3.5vw, 16px);
-  }
-
-  .taskbar {
-    height: 50px;
-    font-size: 12px;
-  }
-
-  .app-window {
-    width: 98vw;
-    height: 90vh;
-  }
-
-  .app-window-titlebar {
-    font-size: 20px;
-  }
-
-  .about-me-name {
-    font-size: clamp(20px, 5vw, 30px);
-  }
-
-  .education-title {
-    font-size: clamp(20px, 4vw, 30px);
-  }
-
-  .mail-icon {
-    width: min(200px, 70vw);
-  }
-
-  .course-badge {
-    font-size: clamp(14px, 3vw, 20px);
-  }
-
-  .course-box {
-    font-size: clamp(14px, 3vw, 20px);
-  }
-}
-
-@media (max-height: 700px) {
-  .desktop-icon {
-    padding: 12px;
-  }
-
-  .desktop-icon-image {
-    width: 100px;
-    height: auto;
-  }
-
-  .desktop-icon-label {
-    font-size: 16px;
-  }
-
-  .desktop-column {
-    gap: 100px; /* Reduce vertical gap between icons */
-  }
-}
+/* ---------- Skills window ---------- */
 
 .skills-content {
-  padding: clamp(15px, 3vw, 30px);
-  font-family: "Poppins", sans-serif;
-  color: #222;
+  padding: clamp(1rem, 3vw, 1.75rem);
 }
 
 .skills-title {
-  font-size: clamp(30px, 4vw, 70px);
-  margin-bottom: 25px;
-  color: #570987;
+  margin: 0 0 0.5rem;
+  font-size: clamp(1.4rem, 2.2vw, 1.9rem);
+  color: var(--purple);
 }
 
 .skills-category {
-  font-size: clamp(20px, 3vw, 40px);
-  margin: 20px 0 10px;
-  color: #7e1d6f;
-  font-weight: normal;
+  margin: 1rem 0 0.5rem;
+  font-size: 1.15rem;
+  color: var(--magenta);
 }
 
 .skills-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 30px;
+  gap: 0.6rem;
 }
 
 .skill-badge {
-  padding: clamp(6px, 1.5vw, 10px) clamp(8px, 1.5vw, 16px);
+  padding: 0.4rem 0.8rem;
   background-color: #f5f5f5;
   border: 2px solid #ccc;
   border-radius: 10px;
-  font-size: clamp(16px, 2.5vw, 30px);
+  font-size: 0.95rem;
   color: #333;
   box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -803,39 +584,25 @@ a .contact-callout:hover {
   box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
 }
 
-.skill-badge {
-  padding: clamp(6px, 1.5vw, 10px) clamp(8px, 1.5vw, 16px);
-  background-color: #f5f5f5;
-  border: 2px solid #ccc;
-  border-radius: 10px;
-  font-size: clamp(16px, 2.5vw, 30px);
-  color: #333;
-  font-family: "Inter", sans-serif; /* 👈 Set a different font */
-  font-weight: normal; /* 👈 Ensure not bold */
-  box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  cursor: default;
-}
-
 .skills-image-wrapper {
-  margin-top: 30px;
   display: flex;
   justify-content: center;
+  margin-top: 1.5rem;
 }
 
 .skills-image {
-  width: min(500px, 50vw);
+  width: min(260px, 50%);
   height: auto;
   object-fit: contain;
   opacity: 0.9;
   filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
-  margin-top: 60px;
 }
 
 .skills-image:hover {
   animation: bounce 0.6s ease;
   filter: drop-shadow(0 0 10px rgba(87, 9, 135, 0.6));
 }
+
 @keyframes bounce {
   0%,
   100% {
@@ -846,168 +613,209 @@ a .contact-callout:hover {
   }
 }
 
-.gameboy-icon {
-  width: min(180px, 12vw);
+/* ---------- Arcade window ---------- */
+
+.gameboy-content {
+  padding: clamp(1rem, 3vw, 1.75rem);
 }
 
-.typing-game {
-  font-family: "Poppins", sans-serif;
-  background-color: #f5f5f5;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  max-width: 700px;
-  margin: 2rem auto;
-  text-align: center;
-  animation: bounceFadeIn 0.5s ease;
+/* ---------- Taskbar ---------- */
+
+.taskbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: var(--taskbar-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0 clamp(8px, 2vw, 24px);
+  background-color: rgba(10, 42, 74, 0.9);
+  color: white;
+  font-size: 0.9rem;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.5);
+  z-index: 500;
 }
 
-.typing-game h2 {
-  color: #570987;
-  font-size: 2rem;
-  margin-bottom: 1rem;
+.taskbar-left {
+  position: relative;
+  flex-shrink: 0;
 }
 
-.word-display {
-  font-size: 2.5rem;
-  margin: 1rem 0;
-  color: #301860;
-  font-weight: bold;
-  letter-spacing: 2px;
-}
-
-.typing-input {
-  font-size: 1.25rem;
-  padding: 0.5rem 1rem;
-  width: 80%;
-  border: 2px solid #ccc;
-  border-radius: 8px;
-  outline: none;
-  transition: box-shadow 0.3s ease;
-}
-
-.typing-input:focus {
-  border-color: #7e1d6f;
-  box-shadow: 0 0 8px rgba(126, 29, 111, 0.5);
-}
-
-.score-display {
-  margin-top: 1.5rem;
-  font-size: 1.2rem;
-  color: #333;
-}
-
-.restart-button {
-  background-color: #570987;
-  color: #fff;
-  padding: 0.6rem 1.5rem;
+.power-button {
+  background: none;
   border: none;
-  border-radius: 8px;
-  font-size: 1rem;
+  color: white;
+  font-size: 1.5rem;
+  line-height: 1;
+  padding: 0.25rem;
   cursor: pointer;
-  margin-top: 1rem;
-  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.restart-button:hover {
-  background-color: #7e1d6f;
-  transform: scale(1.05);
-}
-
-.difficulty-select {
-  display: inline-block;
-  margin-top: 1.5rem;
-  font-size: 1rem;
-  padding: 0.4rem 1.2rem;
+.power-menu {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 0;
+  padding: 0.4rem;
+  background-color: rgba(40, 40, 40, 0.95);
+  border: 1px solid #444;
   border-radius: 8px;
-  border: 2px solid #ccc;
-  background-color: #fff;
-  color: #570987;
-  font-weight: 500;
-  transition: border-color 0.3s ease;
+  color: white;
+  white-space: nowrap;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  z-index: 600;
 }
 
-.difficulty-select:focus {
-  border-color: #7e1d6f;
-  outline: none;
+.power-menu div {
+  padding: 0.5rem 0.9rem;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-@keyframes bounceFadeIn {
-  0% {
-    opacity: 0;
-    transform: scale(0.95) translateY(10px);
+.power-menu div:last-child {
+  border-bottom: none;
+}
+
+.power-menu div:hover {
+  background-color: rgba(80, 80, 80, 0.8);
+}
+
+.taskbar-center {
+  display: flex;
+  gap: 0.4rem;
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.taskbar-center::-webkit-scrollbar {
+  display: none;
+}
+
+.taskbar-tab {
+  padding: 0.3rem 0.7rem;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.taskbar-tab:hover {
+  background-color: rgba(255, 255, 255, 0.35);
+}
+
+.taskbar-right {
+  flex-shrink: 0;
+}
+
+.taskbar-mute-button-wrapper {
+  position: relative;
+}
+
+.taskbar-mute-button {
+  background-color: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 0.4rem 0.6rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.taskbar-mute-button:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+.taskbar-mute-tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  right: 0;
+  padding: 0.3rem 0.6rem;
+  background-color: rgba(40, 40, 40, 0.95);
+  border-radius: 6px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.taskbar-mute-button-wrapper:hover .taskbar-mute-tooltip {
+  opacity: 1;
+}
+
+/* ---------- Small screens ---------- */
+
+@media (max-width: 600px) {
+  :root {
+    --window-width: 96vw;
+    --window-height: calc(100vh - var(--taskbar-height) - 16px);
+    --window-height: calc(100dvh - var(--taskbar-height) - 16px);
   }
-  100% {
-    opacity: 1;
-    transform: scale(1) translateY(0);
+
+  .desktop-content {
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .desktop-column {
+    gap: clamp(12px, 3vh, 32px);
+  }
+
+  .app-window {
+    border-width: 3px;
+    border-radius: 10px;
+  }
+
+  .about-me-header,
+  .education-header {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .about-me-image {
+    width: min(160px, 50%);
+  }
+
+  .education-image {
+    width: min(200px, 60%);
+  }
+
+  .education-text {
+    width: 100%;
+  }
+
+  .mail-icon {
+    width: min(160px, 50%);
   }
 }
 
-@keyframes bounceWord {
-  0% {
-    transform: scale(1);
+/* Short landscape screens (phones turned sideways): tighten the vertical rhythm. */
+@media (max-height: 500px) {
+  :root {
+    --icon-size: clamp(56px, 12vh, 120px);
   }
-  50% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
 
-.word-display {
-  font-size: 2.5rem;
-  margin: 1rem 0;
-  color: #301860;
-  font-weight: bold;
-  letter-spacing: 2px;
-  animation: bounceWord 0.3s ease;
-}
-
-.typing-input:focus {
-  border-color: #7e1d6f;
-  box-shadow: 0 0 5px #7e1d6f80;
-}
-
-.sound-feedback {
-  animation: pop 0.2s ease;
-}
-
-@keyframes pop {
-  0% {
-    transform: scale(1);
+  .desktop-content {
+    padding-top: 8px;
   }
-  50% {
-    transform: scale(1.15);
-  }
-  100% {
-    transform: scale(1);
+
+  .desktop-column {
+    gap: 8px;
   }
 }
 
-/* Sound effects can be triggered in JS on correct word typed */
-
-@media (max-width: 1366px) {
-  .gameboy-icon {
-    width: min(140px, 15vw);
-  }
-}
-
-@media (max-width: 768px) {
-  .gameboy-icon {
-    width: min(100px, 20vw);
-  }
-}
-
-@media (max-width: 480px) {
-  .gameboy-icon {
-    width: min(80px, 25vw);
-  }
-}
-
-@media (max-height: 700px) {
-  .gameboy-icon {
-    width: 100px;
-    height: auto;
+/* Users who prefer less motion: stop the constant icon bobbing. */
+@media (prefers-reduced-motion: reduce) {
+  .desktop-icon,
+  .desktop-icon:hover,
+  .mail-icon,
+  .emoji-wave {
+    animation: none;
   }
 }

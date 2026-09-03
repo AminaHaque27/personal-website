@@ -26,6 +26,22 @@ const MainPage = () => {
     };
   }, []);
 
+  // If the screen size changes (rotation, resize), re-center every window so
+  // none of them end up stranded off-screen.
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowPositions((prev) => {
+        const reset = {};
+        Object.keys(prev).forEach((name) => {
+          reset[name] = null;
+        });
+        return reset;
+      });
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const toggleMute = () => {
     if (audioRef.current) {
       audioRef.current.muted = !isMuted;
@@ -58,22 +74,14 @@ const MainPage = () => {
     audio.play();
   };
 
-  const getDefaultPosition = () => {
-    const width = Math.min(0.9 * window.innerWidth, 2000);
-    const height = Math.min(0.8 * window.innerHeight, 1500);
-
-    return {
-      x: window.innerWidth / 2 - width / 2,
-      y: window.innerHeight / 2 - height / 2,
-    };
-  };
-
   const openWindow = (windowName) => {
     if (!openWindows.includes(windowName)) {
       setOpenWindows([...openWindows, windowName]);
+      // null = "not dragged yet": CSS keeps the window centered on screen.
+      // Once the user drags it we store explicit pixel coordinates instead.
       setWindowPositions({
         ...windowPositions,
-        [windowName]: getDefaultPosition(),
+        [windowName]: null,
       });
       setZOrder([...zOrder, windowName]);
     }
@@ -120,33 +128,53 @@ const MainPage = () => {
     ]);
   };
 
-  const handleMouseDown = (e, windowName) => {
+  // Dragging uses pointer events so it works with a mouse, pen, or finger.
+  const handleDragStart = (e, windowName) => {
+    if (e.button !== undefined && e.button !== 0) return;
+    // Clicks on the minimize/close buttons should not start a drag.
+    if (e.target.closest("button")) return;
+    const windowEl = e.currentTarget.parentElement;
+    const rect = windowEl.getBoundingClientRect();
+
     draggingWindow.current = windowName;
     bringToFront(windowName);
-    offset.current = {
-      x: e.clientX - windowPositions[windowName].x,
-      y: e.clientY - windowPositions[windowName].y,
-    };
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
+    offset.current = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+
+    // Switch from CSS centering to explicit coordinates at the current spot.
+    setWindowPositions((prev) => ({
+      ...prev,
+      [windowName]: { x: rect.left, y: rect.top },
+    }));
+
+    e.currentTarget.setPointerCapture(e.pointerId);
   };
 
-  const handleMouseMove = (e) => {
+  const handleDragMove = (e) => {
     if (!draggingWindow.current) return;
     const windowName = draggingWindow.current;
-    const newX = e.clientX - offset.current.x;
-    const newY = e.clientY - offset.current.y;
+    const windowEl = e.currentTarget.parentElement;
+    const rect = windowEl.getBoundingClientRect();
 
-    setWindowPositions((prevPositions) => ({
-      ...prevPositions,
+    // Keep at least part of the title bar on screen so it can always be grabbed.
+    const minX = -rect.width + 80;
+    const maxX = window.innerWidth - 80;
+    const minY = 0;
+    const maxY = window.innerHeight - 60;
+
+    const newX = Math.min(Math.max(e.clientX - offset.current.x, minX), maxX);
+    const newY = Math.min(Math.max(e.clientY - offset.current.y, minY), maxY);
+
+    setWindowPositions((prev) => ({
+      ...prev,
       [windowName]: { x: newX, y: newY },
     }));
   };
 
-  const handleMouseUp = () => {
+  const handleDragEnd = (e) => {
     draggingWindow.current = null;
-    document.removeEventListener("mousemove", handleMouseMove);
-    document.removeEventListener("mouseup", handleMouseUp);
+    if (e.currentTarget.hasPointerCapture?.(e.pointerId)) {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    }
   };
 
   const handleIconClick = (windowName) => {
@@ -249,28 +277,34 @@ const MainPage = () => {
       </div>
 
       {/* Windows */}
-      {openWindows.map((windowName) =>
-        windowPositions[windowName] !== undefined &&
-        !minimizedWindows.includes(windowName) ? (
+      {openWindows.map((windowName) => {
+        if (minimizedWindows.includes(windowName)) return null;
+        const position = windowPositions[windowName];
+        const isCentered = !position;
+
+        return (
           <div
             key={windowName}
-            className={`app-window ${
+            className={`app-window ${isCentered ? "centered" : ""} ${
               hidingWindows.includes(windowName) ? "hide" : ""
             }`}
             style={{
-              left: `${windowPositions[windowName].x}px`,
-              top: `${windowPositions[windowName].y}px`,
-              transform: "none",
-              zIndex: zOrder.indexOf(windowName) + 100,
+              ...(isCentered
+                ? {}
+                : { left: `${position.x}px`, top: `${position.y}px` }),
+              zIndex: zOrder.indexOf(windowName) + 10,
             }}
-            onMouseDown={() => bringToFront(windowName)}
+            onPointerDown={() => bringToFront(windowName)}
           >
             <div
               className="app-window-titlebar"
-              onMouseDown={(e) => handleMouseDown(e, windowName)}
+              onPointerDown={(e) => handleDragStart(e, windowName)}
+              onPointerMove={handleDragMove}
+              onPointerUp={handleDragEnd}
+              onPointerCancel={handleDragEnd}
             >
-              {windowName}
-              <div>
+              <span>{windowName}</span>
+              <div className="app-window-controls">
                 <button
                   className="minimize-button"
                   onClick={(e) => {
@@ -293,13 +327,22 @@ const MainPage = () => {
             </div>
             <div className="app-window-content">
               {windowName === "Resume" ? (
-                <iframe
-                  src={`${process.env.PUBLIC_URL}/Amina Haque Resume (10).pdf`}
-                  width="100%"
-                  height="100%"
-                  style={{ border: "none" }}
-                  title="Resume PDF"
-                />
+                <div className="resume-content">
+                  <div className="resume-toolbar">
+                    <a
+                      href={`${process.env.PUBLIC_URL}/Amina_Haque_Resume.pdf`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Open in new tab ↗
+                    </a>
+                  </div>
+                  <iframe
+                    src={`${process.env.PUBLIC_URL}/Amina_Haque_Resume.pdf`}
+                    className="resume-frame"
+                    title="Resume PDF"
+                  />
+                </div>
               ) : windowName === "Contact" ? (
                 <div className="contact-content">
                   <div className="contact-box">
@@ -570,8 +613,8 @@ const MainPage = () => {
               )}
             </div>
           </div>
-        ) : null
-      )}
+        );
+      })}
 
       {/* Taskbar */}
       <div className="taskbar">
