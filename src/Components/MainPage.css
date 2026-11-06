@@ -819,3 +819,80 @@
     animation: none;
   }
 }
+
+/* ---------- Experience and Projects windows ---------- */
+
+.entries-content {
+  padding: clamp(1rem, 3vw, 1.75rem);
+}
+
+.entry {
+  padding: 1rem 0;
+  border-top: 2px dashed rgba(87, 9, 135, 0.25);
+}
+
+.entry:first-of-type {
+  border-top: none;
+}
+
+.entry-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+  font-size: 1.05rem;
+  color: var(--purple);
+}
+
+.entry-dates {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+.entry-sub {
+  margin-top: 0.15rem;
+  font-weight: 600;
+  color: var(--magenta);
+}
+
+.entry-sub a,
+.entry-links a {
+  color: var(--purple);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.entry-sub a:hover,
+.entry-links a:hover {
+  text-decoration: underline;
+}
+
+.entry-list {
+  margin: 0.6rem 0 0;
+  padding-left: 1.2rem;
+  line-height: 1.55;
+  color: #333;
+}
+
+.entry-list li + li {
+  margin-top: 0.35rem;
+}
+
+.entry-text {
+  margin: 0.6rem 0 0.8rem;
+  line-height: 1.55;
+  color: #333;
+}
+
+.entry-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.25rem;
+  margin-top: 0.8rem;
+}
+
+.education-entry + .education-entry {
+  margin-top: 1rem;
+}

@@ -3,3 +3,10 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom';
+
+// React Router 7 expects TextEncoder/TextDecoder, which the Jest browser
+// environment used by Create React App does not provide.
+import { TextEncoder, TextDecoder } from "util";
+
+if (!global.TextEncoder) global.TextEncoder = TextEncoder;
+if (!global.TextDecoder) global.TextDecoder = TextDecoder;

@@ -98,3 +98,14 @@
   background-color: rgba(0, 0, 0, 0.9);
   text-shadow: 0 0 15px #00aaff, 0 0 30px #00aaff;
 }
+
+.intro-back-link {
+  font-size: 0.9rem;
+  color: #00aaff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.intro-back-link:hover {
+  color: #7fd4ff;
+}

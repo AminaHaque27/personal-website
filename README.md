@@ -1,55 +1,61 @@
-# 🌐 Amina Haque — Personal Website
+# Amina Haque — Personal Website
 
-Welcome to the GitHub repository for my [personal website](https://aminahaque27.github.io/personal-website/)! I'm Amina Haque, a recent Computer Science graduate and incoming Master's student at the University of Texas at Dallas. This site serves as a central hub for my professional background, projects, and technical portfolio.
+Source for my personal site: **[aminahaque27.github.io/personal-website](https://aminahaque27.github.io/personal-website/)**
 
-## 🔍 About Me
+I'm a software engineer and M.S. Computer Science student at The University of Texas at Dallas. The site covers my experience, projects, research, and resume.
 
-I'm passionate about building meaningful software solutions that combine technical rigor with thoughtful user experience. With hands-on experience in full-stack development, machine learning, UI/UX, and agile collaboration, I'm excited to grow in the software engineering field.
+## What's here
 
-I’ve worked on everything from trading automation to educational platforms and weather-based climate forecasting tools. I’m particularly interested in the intersection of software engineering, AI, and design.
+The site has two modes:
 
----
+- **Main site** (`/`): a single page with experience, projects, skills, education, and contact details.
+- **Retro desktop** (`/#/desktop`): the original version of this portfolio, a retro operating-system desktop with draggable windows, a taskbar, and a typing mini-game. Sound is off until you turn it on.
 
-## 🛠️ Technologies Used
+## Built with
 
-This site is built using:
-- **HTML/CSS**
-- **JavaScript**
-- **GitHub Pages** for deployment
+- React 19 (Create React App)
+- React Router (hash routing, so it works on GitHub Pages)
+- Plain CSS, with light and dark themes on the main site
+- GitHub Pages for hosting
 
-Planned updates include:
-- React or Next.js implementation
-- Interactive project components
-- Embedded blogs or changelogs
+## Project structure
 
----
+```
+public/                    Static files: resume PDF, images, sounds
+src/
+  data/siteData.js         All site content (experience, projects, skills, education)
+  Components/
+    Home.js / Home.css             Main site
+    IntroDesktop.js / .css         Boot screen for the retro desktop
+    MainPage.js / MainPage.css     Retro desktop
+    TypingGame.js / .css           Typing mini-game
+```
 
-## 💡 Featured Projects
+To update a job, project, or skill, edit `src/data/siteData.js`. Both the main site and the retro desktop read from it.
 
-### 🌱 [Aurora](https://github.com/aminahaque27/aurora)
-Machine learning-powered climate forecasting app using historical Texas weather data. Built with Python, React, and REST APIs.
+To update the resume, replace `public/Amina_Haque_Resume.pdf` (keep the same file name).
 
-### 🧵 [EcoCraft](https://github.com/aminahaque27/ecocraft)
-Educational crafting app that promotes sustainability by suggesting crafts based on recycled materials.
+## Running locally
 
-### 🏠 RoomieConnect
-A full-stack web application for roommate matching, complete with user preferences, profiles, and messaging features.
+```bash
+npm install
+```
 
-### 🎶 GDYO Mobile App
-Developed a cross-platform app for Greater Dallas Youth Orchestra to manage student communication, schedules, and newsletters.
+```bash
+npm start
+```
 
----
+The site opens at `http://localhost:3000/personal-website`.
 
-## 📫 Contact
+## Deploying
 
-Feel free to connect with me on [LinkedIn](https://linkedin.com/in/amina-syeda-haque) or shoot me an email at **aminashaque@gmail.com**. I'd love to collaborate, network, or just chat about tech!
+```bash
+npm run deploy
+```
 
----
+This builds the site and publishes it to the `gh-pages` branch.
 
-## 🚀 Live Website
+## Contact
 
-👉 [Visit aminahaque27.github.io/personal-website](https://aminahaque27.github.io/personal-website/)
-
----
-
-Thank you for checking out my work!
+- Email: aminashaque@gmail.com
+- LinkedIn: [linkedin.com/in/amina-syeda-haque](https://www.linkedin.com/in/amina-syeda-haque/)

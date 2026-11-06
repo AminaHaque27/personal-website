@@ -1,6 +1,20 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import TypingGame from "./TypingGame";
+import {
+  profile,
+  experience,
+  projects,
+  skills,
+  education,
+} from "../data/siteData";
 import "./MainPage.css";
+
+// Short piano notes played when hovering over course and skill badges.
+const NOTES = ["GNote", "FNote", "FnoteTwo", "Enote"];
+
+// The desktop version of the project list skips the entry that links back here.
+const desktopProjects = projects.filter((p) => p.name !== "Retro Desktop");
 
 const MainPage = () => {
   const [showPowerMenu, setShowPowerMenu] = useState(false);
@@ -9,7 +23,9 @@ const MainPage = () => {
   const [windowPositions, setWindowPositions] = useState({});
   const [hidingWindows, setHidingWindows] = useState([]);
   const [zOrder, setZOrder] = useState([]);
-  const [isMuted, setIsMuted] = useState(false);
+  // Sound is off until the visitor turns it on with the taskbar button.
+  const [isMuted, setIsMuted] = useState(true);
+  const navigate = useNavigate();
   const draggingWindow = useRef(null);
   const offset = useRef({ x: 0, y: 0 });
   const audioRef = useRef(null);
@@ -43,15 +59,12 @@ const MainPage = () => {
   }, []);
 
   const toggleMute = () => {
-    if (audioRef.current) {
-      audioRef.current.muted = !isMuted;
-      setIsMuted(!isMuted);
-    }
-  };
-
-  // Add this below toggleMute
-  const startBackgroundMusic = () => {
-    if (audioRef.current && audioRef.current.paused) {
+    const nextMuted = !isMuted;
+    setIsMuted(nextMuted);
+    if (!audioRef.current) return;
+    if (nextMuted) {
+      audioRef.current.pause();
+    } else {
       audioRef.current.play().catch((e) => {
         console.log("Audio play blocked:", e);
       });
@@ -62,17 +75,17 @@ const MainPage = () => {
     setShowPowerMenu((prev) => !prev);
   };
 
-  const playClickSound = () => {
-    const audio = new Audio(`${process.env.PUBLIC_URL}/Click.mp3`);
-    audio.volume = 1;
-    audio.play();
+  // Every sound effect goes through here so the mute button controls them all.
+  const playSound = (name, volume = 1) => {
+    if (isMuted) return;
+    const audio = new Audio(`${process.env.PUBLIC_URL}/${name}.mp3`);
+    audio.volume = volume;
+    audio.play().catch(() => {});
   };
 
-  const playPageFlipSound = () => {
-    const audio = new Audio(`${process.env.PUBLIC_URL}/PageFlip.mp3`);
-    audio.volume = 1;
-    audio.play();
-  };
+  const playClickSound = () => playSound("Click");
+  const playPageFlipSound = () => playSound("PageFlip");
+  const playNote = (index) => playSound(NOTES[index % NOTES.length], 0.6);
 
   const openWindow = (windowName) => {
     if (!openWindows.includes(windowName)) {
@@ -178,7 +191,6 @@ const MainPage = () => {
   };
 
   const handleIconClick = (windowName) => {
-    startBackgroundMusic();
     playClickSound();
     openWindow(windowName);
   };
@@ -261,10 +273,7 @@ const MainPage = () => {
           <div
             className="desktop-icon"
             style={{ "--bounce-delay": "0.5s" }}
-            onClick={() => {
-              playClickSound();
-              openWindow("Gameboy");
-            }}
+            onClick={() => handleIconClick("Gameboy")}
           >
             <img
               src={`${process.env.PUBLIC_URL}/Gameboy.png`}
@@ -272,6 +281,34 @@ const MainPage = () => {
               className="desktop-icon-image gameboy-icon"
             />
             <div className="desktop-icon-label">Arcade</div>
+          </div>
+        </div>
+
+        {/* Column 4: Experience + Projects */}
+        <div className="desktop-column">
+          <div
+            className="desktop-icon"
+            style={{ "--bounce-delay": "0.6s" }}
+            onClick={() => handleIconClick("Experience")}
+          >
+            <img
+              src={`${process.env.PUBLIC_URL}/FolderReal.png`}
+              alt="Folder"
+              className="desktop-icon-image"
+            />
+            <div className="desktop-icon-label">Experience</div>
+          </div>
+          <div
+            className="desktop-icon"
+            style={{ "--bounce-delay": "0.7s" }}
+            onClick={() => handleIconClick("Projects")}
+          >
+            <img
+              src={`${process.env.PUBLIC_URL}/FolderReal.png`}
+              alt="Folder"
+              className="desktop-icon-image"
+            />
+            <div className="desktop-icon-label">Projects</div>
           </div>
         </div>
       </div>
@@ -346,23 +383,33 @@ const MainPage = () => {
               ) : windowName === "Contact" ? (
                 <div className="contact-content">
                   <div className="contact-box">
-                    📧 Email: aminashaque@gmail.com
+                    📧 Email:{" "}
+                    <a href={`mailto:${profile.email}`}>{profile.email}</a>
                   </div>
                   <div className="contact-box">
                     🔗 LinkedIn:{" "}
                     <a
-                      href="https://www.linkedin.com/in/amina-syeda-haque/"
+                      href={profile.linkedin}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      https://www.linkedin.com/in/amina-syeda-haque/
+                      linkedin.com/in/amina-syeda-haque
                     </a>
                   </div>
-                  <div className="contact-box">📞 Phone: 214-609-3944</div>
+                  <div className="contact-box">
+                    💻 GitHub:{" "}
+                    <a
+                      href={profile.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      github.com/AminaHaque27
+                    </a>
+                  </div>
                   <div className="contact-callout">
-                    👋 <span className="emoji-wave">Hey there!</span> Feel free
-                    to reach out — I'm always open to exciting opportunities,
-                    tech chats, and meaningful collaborations 🚀
+                    👋 <span className="emoji-wave">Hey there!</span> The best
+                    way to reach me is email. I'm happy to talk about roles,
+                    research, or anything I've built.
                   </div>
 
                   <img
@@ -384,34 +431,32 @@ const MainPage = () => {
                     <div className="about-me-intro">
                       <ul>
                         <li>
-                          🎓 Recent Computer Science Graduate from UT Dallas
+                          🎓 <strong>M.S. Computer Science</strong> student at
+                          UT Dallas (B.S. Computer Science, May 2025)
                         </li>
                         <li>
-                          ⚙️ Full-stack developer with hands-on experience in{" "}
-                          <strong>React</strong>, <strong>Node.js</strong>,{" "}
-                          <strong>Python</strong>, <strong>Java</strong>, and{" "}
-                          <strong>C/C++</strong>
-                        </li>
-                        <li>
-                          🖥️ Front-end expertise in <strong>HTML</strong>,{" "}
-                          <strong>CSS</strong>, <strong>JavaScript</strong>,{" "}
+                          ⚙️ Full-stack developer at{" "}
+                          <strong>Haque Systems</strong>, building a
+                          multi-tenant AI SaaS with <strong>Next.js</strong>,{" "}
                           <strong>TypeScript</strong>, and{" "}
-                          <strong>responsive UI/UX design</strong>
+                          <strong>PostgreSQL</strong>
                         </li>
                         <li>
-                          🛠️ Back-end experience with <strong>Node.js</strong>,{" "}
-                          <strong>Express.js</strong>, <strong>SQL</strong>,{" "}
-                          <strong>MongoDB</strong>, and{" "}
-                          <strong>REST API</strong> development; strong
-                          understanding of <strong>authentication</strong>,{" "}
-                          <strong>data modeling</strong>, and{" "}
-                          <strong>scalable system design</strong>
+                          🔐 Cybersecurity researcher on an{" "}
+                          <strong>NSA-sponsored INSuRE</strong> project testing
+                          whether LLM agents can recover hidden data from
+                          radio-frequency emanations
                         </li>
                         <li>
-                          ☁️ Skilled in{" "}
-                          <strong>version control (Git/GitHub)</strong>, cloud
-                          deployment workflows, and collaborative development
-                          using <strong>Agile</strong> methodologies
+                          🧪 Focused on <strong>testing and validation</strong>:
+                          unit and integration tests, ground-truth design, and
+                          evaluation harnesses
+                        </li>
+                        <li>
+                          🛠️ Comfortable across <strong>Python</strong>,{" "}
+                          <strong>Java</strong>, <strong>C++</strong>,{" "}
+                          <strong>C#</strong>, <strong>TypeScript</strong>, and{" "}
+                          <strong>SQL</strong>
                         </li>
                       </ul>
                     </div>
@@ -439,13 +484,17 @@ const MainPage = () => {
                     />
                     <div className="education-text">
                       <h2 className="education-title">🎓 Education</h2>
-                      <p className="education-degree">
-                        <strong>Bachelor of Science in Computer Science</strong>
-                      </p>
-                      <p className="education-school">
-                        The University of Texas at Dallas, Richardson, TX
-                      </p>
-                      <p className="education-date">May 2025</p>
+                      {education.map((e) => (
+                        <div key={e.degree} className="education-entry">
+                          <p className="education-degree">
+                            <strong>{e.degree}</strong>
+                          </p>
+                          <p className="education-school">
+                            {e.school}, {e.location}
+                          </p>
+                          <p className="education-date">{e.dates}</p>
+                        </div>
+                      ))}
                     </div>
                   </div>
 
@@ -454,148 +503,49 @@ const MainPage = () => {
                   <h3 className="coursework-heading">🎯 Relevant Coursework</h3>
                   <div className="education-courses">
                     {[
-                      { label: "Programming Fundamentals", sound: "Gnote" },
-                      { label: "Data Structures & Algorithms", sound: "Fnote" },
-                      { label: "C/C++ in UNIX", sound: "FnoteTwo" },
-                      { label: "Probability & Stats", sound: "Enote" },
-                      { label: "Computer Architecture", sound: "Gnote" },
-                      { label: "Artificial Intelligence", sound: "Fnote" },
-                      {
-                        label: "Digital Logic and Computer Design",
-                        sound: "FnoteTwo",
-                      },
-                      { label: "Automata Theory", sound: "Enote" },
-                      { label: "Database Systems", sound: "Gnote" },
-                      { label: "Human-Computer Interaction", sound: "Fnote" },
-                      { label: "Software Engineering", sound: "FnoteTwo" },
-                      { label: "Public Speaking", sound: "Enote" },
+                      "Programming Fundamentals",
+                      "Data Structures & Algorithms",
+                      "C/C++ in UNIX",
+                      "Probability & Stats",
+                      "Computer Architecture",
+                      "Artificial Intelligence",
+                      "Digital Logic and Computer Design",
+                      "Automata Theory",
+                      "Database Systems",
+                      "Human-Computer Interaction",
+                      "Software Engineering",
+                      "Public Speaking",
                     ].map((course, index) => (
                       <div
-                        key={index}
+                        key={course}
                         className="course-box"
-                        onMouseEnter={() => {
-                          // Stop all other sounds before playing
-                          const audio = new Audio(
-                            `${process.env.PUBLIC_URL}/${course.sound}.mp3`
-                          );
-
-                          audio.volume = 0.6;
-                          audio.play();
-                        }}
+                        onMouseEnter={() => playNote(index)}
                       >
-                        {course.label}
+                        {course}
                       </div>
-                    ))}{" "}
+                    ))}
                   </div>
                 </div>
               ) : windowName === "Skills" ? (
                 <div className="skills-content">
                   <h2 className="skills-title">💻 Skills</h2>
 
-                  <div className="skills-category">
-                    Languages & Technologies
-                  </div>
-                  <div className="skills-grid">
-                    {[
-                      "C#",
-                      "C++",
-                      "C",
-                      "Java",
-                      "Python",
-                      "JavaScript",
-                      "TypeScript",
-                      "HTML",
-                      "CSS",
-                      "MySQL",
-                      "Bash/Shell Scripting",
-                    ].map((skill, index) => {
-                      const sounds = ["Gnote", "Fnote", "FnoteTwo", "Enote"];
-                      const sound = sounds[index % sounds.length];
-                      return (
-                        <div
-                          key={index}
-                          className="skill-badge"
-                          onMouseEnter={() => {
-                            const audio = new Audio(
-                              `${process.env.PUBLIC_URL}/${sound}.mp3`
-                            );
-
-                            audio.volume = 0.6;
-                            audio.play();
-                          }}
-                        >
-                          {skill}
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  <div className="skills-category">Frameworks & Tools</div>
-                  <div className="skills-grid">
-                    {[
-                      "React",
-                      "Next.js",
-                      "Node.js",
-                      "React Native",
-                      "Express",
-                      "Expo",
-                      "Git",
-                      "GitHub",
-                      "Docker",
-                      "Angular",
-                    ].map((skill, index) => {
-                      const sounds = ["Gnote", "Fnote", "FnoteTwo", "Enote"];
-                      const sound = sounds[index % sounds.length];
-                      return (
-                        <div
-                          key={index}
-                          className="skill-badge"
-                          onMouseEnter={() => {
-                            const audio = new Audio(
-                              `${process.env.PUBLIC_URL}/${sound}.mp3`
-                            );
-
-                            audio.volume = 0.6;
-                            audio.play();
-                          }}
-                        >
-                          {skill}
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  <div className="skills-category">UI/UX & Platforms</div>
-                  <div className="skills-grid">
-                    {[
-                      "Figma",
-                      "Canva",
-                      "UX/UI Design",
-                      "Eclipse",
-                      "VS Code",
-                      "Tailwind CSS",
-                      "IntelliJ",
-                      "Linux/Unix",
-                    ].map((skill, index) => {
-                      const sounds = ["Gnote", "Fnote", "FnoteTwo", "Enote"];
-                      const sound = sounds[index % sounds.length];
-                      return (
-                        <div
-                          key={index}
-                          className="skill-badge"
-                          onMouseEnter={() => {
-                            const audio = new Audio(
-                              `${process.env.PUBLIC_URL}/${sound}.mp3`
-                            );
-                            audio.volume = 0.6;
-                            audio.play();
-                          }}
-                        >
-                          {skill}
-                        </div>
-                      );
-                    })}
-                  </div>
+                  {skills.map((category) => (
+                    <React.Fragment key={category.group}>
+                      <div className="skills-category">{category.group}</div>
+                      <div className="skills-grid">
+                        {category.items.map((skill, index) => (
+                          <div
+                            key={skill}
+                            className="skill-badge"
+                            onMouseEnter={() => playNote(index)}
+                          >
+                            {skill}
+                          </div>
+                        ))}
+                      </div>
+                    </React.Fragment>
+                  ))}
                   <div className="skills-image-wrapper">
                     <img
                       src={`${process.env.PUBLIC_URL}/Pencil.png`}
@@ -603,6 +553,72 @@ const MainPage = () => {
                       className="skills-image"
                     />
                   </div>
+                </div>
+              ) : windowName === "Experience" ? (
+                <div className="entries-content">
+                  <h2 className="skills-title">💼 Experience</h2>
+                  {experience.map((job) => (
+                    <div key={`${job.org}-${job.role}`} className="entry">
+                      <div className="entry-head">
+                        <strong>{job.role}</strong>
+                        <span className="entry-dates">{job.dates}</span>
+                      </div>
+                      <div className="entry-sub">
+                        {job.orgUrl ? (
+                          <a
+                            href={job.orgUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {job.org}
+                          </a>
+                        ) : (
+                          job.org
+                        )}
+                        {job.location ? ` · ${job.location}` : ""}
+                      </div>
+                      <ul className="entry-list">
+                        {job.bullets.map((b) => (
+                          <li key={b}>{b}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              ) : windowName === "Projects" ? (
+                <div className="entries-content">
+                  <h2 className="skills-title">🚀 Projects</h2>
+                  {desktopProjects.map((project) => (
+                    <div key={project.name} className="entry">
+                      <div className="entry-head">
+                        <strong>{project.name}</strong>
+                        <span className="entry-dates">{project.dates}</span>
+                      </div>
+                      <div className="entry-sub">{project.context}</div>
+                      <p className="entry-text">{project.description}</p>
+                      <div className="skills-grid">
+                        {project.tags.map((tag) => (
+                          <div key={tag} className="skill-badge">
+                            {tag}
+                          </div>
+                        ))}
+                      </div>
+                      {project.links.length > 0 && (
+                        <div className="entry-links">
+                          {project.links.map((link) => (
+                            <a
+                              key={link.label}
+                              href={link.href}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {link.label} ↗
+                            </a>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
                 </div>
               ) : windowName === "Gameboy" ? (
                 <div className="gameboy-content">
@@ -624,9 +640,8 @@ const MainPage = () => {
           </button>
           {showPowerMenu && (
             <div className="power-menu">
-              <div>Sleep</div>
-              <div>Shut down</div>
-              <div>Restart</div>
+              <div onClick={() => navigate("/")}>Exit to main site</div>
+              <div onClick={() => navigate("/desktop")}>Restart</div>
             </div>
           )}
         </div>
@@ -653,11 +668,15 @@ const MainPage = () => {
         {/* Taskbar Right — Mute button */}
         <div className="taskbar-right">
           <div className="taskbar-mute-button-wrapper">
-            <button className="taskbar-mute-button" onClick={toggleMute}>
+            <button
+              className="taskbar-mute-button"
+              onClick={toggleMute}
+              aria-label={isMuted ? "Turn sound on" : "Turn sound off"}
+            >
               {isMuted ? "🔇" : "🔊"}
             </button>
             <div className="taskbar-mute-tooltip">
-              {isMuted ? "Unmute Music" : "Mute Music"}
+              {isMuted ? "Turn sound on" : "Turn sound off"}
             </div>
           </div>
         </div>

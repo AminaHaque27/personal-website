@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./IntroDesktop.css";
 
 const IntroDesktop = () => {
@@ -46,6 +46,12 @@ const IntroDesktop = () => {
         <button className="enter-button" onClick={() => navigate("/main")}>
           Enter
         </button>
+
+        <p>
+          <Link className="intro-back-link" to="/">
+            ← Back to the main site
+          </Link>
+        </p>
       </div>
     </div>
   );
